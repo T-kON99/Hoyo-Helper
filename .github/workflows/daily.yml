@@ -1,5 +1,5 @@
 name: DailyCheckIn
-run-name: ${{ github.actor }} Checking-in~ 🚀
+run-name: ${{ github.actor }} Checking-in
 
 on:
   schedule:
@@ -22,4 +22,4 @@ jobs:
         run: |
           chmod +x ./run.sh
           ./run.sh
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - run: echo "Job's status is **${{ job.status }}**."

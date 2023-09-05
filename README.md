@@ -23,13 +23,13 @@ Supports multiple tokens, in case you want to do it for multiple accounts...
 *games* field must be one of `(gs, hsr, hi3)`
 
 ```bash
-echo 'HOYO_TOKENS = "<above token>"' >> secret.py
+export 'HOYO_TOKENS = "<above token in string format>"'
 ```
 
 ### Discord Webhook
 
 ```bash
-echo 'DISCORD_WEBHOOK = "<your_webhook_discord_channel_here>"' >> secret.py
+export 'DISCORD_WEBHOOK = "<your_webhook_discord_channel_here>"'
 ```
 
 ### Usage
@@ -54,6 +54,4 @@ python main.py
 
 ### Footnotes
 
-1. You can use `cron` job to schedule this at a regular interval. Alternatively you can set up Google pub/sub API to `watch` your gmail instead, but that is not what this project is for.
-2. Alternatively you can use [pythonanywhere](https://www.pythonanywhere.com/) to host this project and run `./run.sh` instead. Do set the permission to be an executeable script with `chmod +x ./run.sh`. 
-3. Replace the dir specified in `./run.sh` to your respective dir.
+1. Utilizes github workflows to run the job.

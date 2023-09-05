@@ -5,12 +5,14 @@ import os
 from datetime import datetime
 import logging
 
+DISCORD_WEBHOOK = os.environ["DISCORD_WEBHOOK"]
+HOYO_TOKENS = json.loads(os.environ["HOYO_TOKENS"])
+
 url = {
     "gs": "https://sg-hk4e-api.hoyolab.com/event/sol/sign?lang=en-us&act_id=e202102251931481",
     "hsr": "https://sg-public-api.hoyolab.com/event/luna/os/sign?lang=en-us&act_id=e202303301540311",
     "hi3": "https://sg-public-api.hoyolab.com/event/mani/sign?lang=en-us&act_id=e202110291205111",
 }
-
 
 cfg = {
     "gs": {
@@ -61,7 +63,7 @@ def auto_signin_from_token_dict(token: dict) -> dict:
 
 if __name__ == "__main__":
     logging.basicConfig(filename="runtime.log", encoding="utf-8", level=logging.INFO)
-    for token in os.environ["HOYO_TOKENS"]:
+    for token in HOYO_TOKENS:
         r = auto_signin_from_token_dict(token)
         for game, resp in r.items():
             msg, err = resp
@@ -92,7 +94,7 @@ if __name__ == "__main__":
             logging.info(
                 utils.to_discwebhook(
                     None,
-                    os.environ["DISCORD_WEBHOOK"],
+                    DISCORD_WEBHOOK,
                     discord_embed,
                 )
             )
