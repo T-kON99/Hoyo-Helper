@@ -65,9 +65,11 @@ if __name__ == "__main__":
         r = auto_signin_from_token_dict(token)
         for game, resp in r.items():
             msg, err = resp
-            color = errColor
-            if err is None:
-                color = succColor
+            color = succColor
+            fields = [{"name": "Check-in Status", "value": f"**{msg}**"}]
+            if err is not None:
+                color = errColor
+                fields.append({"name": "Error", "value": f"**{err}**"})
             discord_embed = {
                 "title": f"{cfg[game]['long_name']} Auto Check-in",
                 "description": f"*Helping check-ins~*",
@@ -79,6 +81,7 @@ if __name__ == "__main__":
                 "url": f"https://www.hoyolab.com/accountCenter/postList?id={token['ltuid']}",
                 "fields": [
                     {"name": "Check-in Status", "value": f"**{msg}**"},
+                    {"name": "Error", "value": f"**{err}**"},
                 ],
                 "footer": {
                     "text": f"HoyoHelper {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
