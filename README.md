@@ -41,7 +41,6 @@ git clone https://github.com/T-kON99/Hoyo-Helper.git
 ### Installating Dependencies
 
 ```bash
-cd Hoyo-Helper
 python3 -m venv env
 source env/bin/activate
 pip install -r requirements.txt

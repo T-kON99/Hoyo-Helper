@@ -1,0 +1,25 @@
+name: DailyCheckIn
+run-name: ${{ github.actor }} Checking-in~ 🚀
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  daily-check-in:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Dep
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Run Task
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          HOYO_TOKENS: ${{ secrets.HOYO_TOKENS }}
+        run: |
+          chmod +x ./run.sh
+          ./run.sh
+      - run: echo "🍏 This job's status is ${{ job.status }}."

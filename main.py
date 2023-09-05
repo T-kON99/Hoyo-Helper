@@ -1,8 +1,8 @@
 import requests
 import utils as utils
 import json
+import os
 from datetime import datetime
-import secret as secret
 import logging
 
 url = {
@@ -61,13 +61,15 @@ def auto_signin_from_token_dict(token: dict) -> dict:
 
 if __name__ == "__main__":
     logging.basicConfig(filename="runtime.log", encoding="utf-8", level=logging.INFO)
-    for token in secret.HOYO_TOKENS:
+    for token in os.environ["HOYO_TOKENS"]:
         r = auto_signin_from_token_dict(token)
         for game, resp in r.items():
             msg, err = resp
-            color = errColor
-            if err is None:
-                color = succColor
+            color = succColor
+            fields = [{"name": "Check-in Status", "value": f"**{msg}**"}]
+            if err is not None:
+                color = errColor
+                fields.append({"name": "Error", "value": f"**{err}**"})
             discord_embed = {
                 "title": f"{cfg[game]['long_name']} Auto Check-in",
                 "description": f"*Helping check-ins~*",
@@ -79,6 +81,7 @@ if __name__ == "__main__":
                 "url": f"https://www.hoyolab.com/accountCenter/postList?id={token['ltuid']}",
                 "fields": [
                     {"name": "Check-in Status", "value": f"**{msg}**"},
+                    {"name": "Error", "value": f"**{err}**"},
                 ],
                 "footer": {
                     "text": f"HoyoHelper {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
@@ -89,7 +92,7 @@ if __name__ == "__main__":
             logging.info(
                 utils.to_discwebhook(
                     None,
-                    secret.DISCORD_WEBHOOK,
+                    os.environ["DISCORD_WEBHOOK"],
                     discord_embed,
                 )
             )
