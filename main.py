@@ -1,8 +1,8 @@
 import requests
 import utils as utils
 import json
+import os
 from datetime import datetime
-import secret as secret
 import logging
 
 url = {
@@ -61,7 +61,7 @@ def auto_signin_from_token_dict(token: dict) -> dict:
 
 if __name__ == "__main__":
     logging.basicConfig(filename="runtime.log", encoding="utf-8", level=logging.INFO)
-    for token in secret.HOYO_TOKENS:
+    for token in os.environ["HOYO_TOKENS"]:
         r = auto_signin_from_token_dict(token)
         for game, resp in r.items():
             msg, err = resp
@@ -92,7 +92,7 @@ if __name__ == "__main__":
             logging.info(
                 utils.to_discwebhook(
                     None,
-                    secret.DISCORD_WEBHOOK,
+                    os.environ["DISCORD_WEBHOOK"],
                     discord_embed,
                 )
             )
