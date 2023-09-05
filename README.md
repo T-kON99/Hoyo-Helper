@@ -54,4 +54,5 @@ python main.py
 
 ### Footnotes
 
-1. Utilizes github workflows to run the job.
+1. Utilizes github workflows to run the job.s
+2. When passing in secrets to github workflow, make sure the json format of the token is minified (valid json)
