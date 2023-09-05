@@ -3,7 +3,7 @@ run-name: ${{ github.actor }} Checking-in~ 🚀
 
 on:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "* * * * *"
 
 jobs:
   daily-check-in:
