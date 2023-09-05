@@ -1,0 +1,1 @@
+cd /home/TkON/hoyo-helper && source env/bin/activate && python main.py
