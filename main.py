@@ -5,8 +5,24 @@ import os
 from datetime import datetime
 import logging
 
-DISCORD_WEBHOOK = os.environ["DISCORD_WEBHOOK"]
-HOYO_TOKENS = json.loads(os.environ["HOYO_TOKENS"])
+DISCORD_WEBHOOK = None
+HOYO_TOKENS = None
+# Setup for production/local dev
+try:
+    DISCORD_WEBHOOK = os.environ["DISCORD_WEBHOOK"]
+    HOYO_TOKENS = json.loads(os.environ["HOYO_TOKENS"])
+except KeyError:
+    try:
+        import secret
+
+        DISCORD_WEBHOOK = secret.DISCORD_WEBHOOK
+        HOYO_TOKENS = secret.HOYO_TOKENS
+    except ModuleNotFoundError:
+        logging.fatal("env DISCORD_WEBHOOK / HOYO_TOKENS not configured properly")
+        exit(1)
+    except KeyError:
+        pass
+
 
 url = {
     "gs": "https://sg-hk4e-api.hoyolab.com/event/sol/sign?lang=en-us&act_id=e202102251931481",
@@ -33,8 +49,18 @@ errColor = 0xED4E4E
 succColor = 0x54ED4E
 
 
-def get_token(ltoken: str, ltuid: str):
+def get_token(ltoken: str, ltuid: str, enableV2: bool):
+    if enableV2:
+        return f"ltoken_v2={ltoken}; ltuid_v2={ltuid};"
     return f"ltoken={ltoken}; ltuid={ltuid};"
+
+
+def is_v2_token(token: dict):
+    return token.get("enable_v2", False)
+
+
+def get_discord_uid(token: dict):
+    return token.get("discord_uid", None)
 
 
 def get_headers(token: str):
@@ -47,7 +73,9 @@ def auto_signin_from_token_dict(token: dict) -> dict:
     out = {}
     for game in token["games"]:
         try:
-            headers = get_headers(get_token(token["ltoken"], token["ltuid"]))
+            headers = get_headers(
+                get_token(token["ltoken"], token["ltuid"], is_v2_token(token))
+            )
             resp = requests.post(url[game], headers=headers)
             if resp.status_code != 200:
                 out[game] = (
@@ -72,11 +100,19 @@ if __name__ == "__main__":
             if err is not None:
                 color = errColor
                 fields.append({"name": "Error", "value": f"**{err}**"})
-            discord_embed = {
+
+            discordEmbedAuthor = "HoyoHelper V2" if is_v2_token(token) else "HoyoHelper"
+            discordUID = get_discord_uid(token)
+            discordDescription = (
+                f"*Helping <@!{discordUID}> check-ins~*"
+                if discordUID is not None
+                else f"*Helping check-ins~*"
+            )
+            discordEmbed = {
                 "title": f"{cfg[game]['long_name']} Auto Check-in",
-                "description": f"*Helping check-ins~*",
+                "description": discordDescription,
                 "author": {
-                    "name": "HoyoHelper",
+                    "name": discordEmbedAuthor,
                     "url": "https://img-os-static.mihoyo.com/avatar/avatar1.png",
                     "icon_url": "https://img-os-static.mihoyo.com/avatar/avatar1.png",
                 },
@@ -95,6 +131,6 @@ if __name__ == "__main__":
                 utils.to_discwebhook(
                     None,
                     DISCORD_WEBHOOK,
-                    discord_embed,
+                    discordEmbed,
                 )
             )
