@@ -2,6 +2,7 @@ name: DailyCheckIn
 run-name: ${{ github.actor }} Checking-in@${{ github.run_id }}
 
 on:
+  push:
   schedule:
     - cron: "0 0 * * *"
 
