@@ -18,8 +18,10 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Run Task
         env:
-          DISCORD_WEBHOOK: echo "${{ secrets.DISCORD_WEBHOOK }}"
-          HOYO_TOKENS: echo "${{ secrets.HOYO_TOKENS }}"
+          DISCORD_WEBHOOK: | 
+            ${{ secrets.DISCORD_WEBHOOK }}
+          HOYO_TOKENS: |
+            ${{ secrets.HOYO_TOKENS }}
         run: |
           chmod +x ./run.sh
           ./run.sh
