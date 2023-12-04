@@ -93,3 +93,4 @@ You can now run `./run.sh` directly.
 1. Utilizes github workflows to run the job once per day
 2. When passing in secrets to github workflow, make sure the json format of the token is minified and a valid json (use [helper.py](./helper.py) for easier setup)
 3. Related `ltoken/ltuid` cookie has expiration date, but usually it's very long in the future. Thus the cookie may or may not be valid after that time, and will require to be renewed
+4. You have to re-enable workflow periodically every 60 days.
