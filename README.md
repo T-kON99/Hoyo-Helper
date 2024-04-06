@@ -6,11 +6,23 @@ This is a hoyo helper intended to help user check-ins automatically, and sending
 
 ### Credentials
 
-Obtain the required 3 credentials:
+Set up these 2 [Github Action Secret](https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions#creating-secrets-for-a-repository)
 1. HOYO_TOKENS
 2. DISCORD_WEBHOOK
 
 You require the cookies containing `ltuid` and `ltoken` to be able to construct `HOYO_TOKENS`.
+
+#### How to obtain HoYoLab Cookie
+
+1. To begin, login with your [HoYoLab](https://www.hoyolab.com/home) Account or from [Battlepass](https://act.hoyolab.com/app/community-game-records-sea/index.html?bbs_presentation_style=fullscreen&bbs_auth_required=true&gid=2&user_id=122516750&utm_source=hoyolab&utm_medium=gamecard&bbs_theme=light&bbs_theme_device=1#/ys).
+2. Type `java` in the address bar followed by the script down below.
+3. ```javascript
+   script: (function(){if(document.cookie.includes('ltoken')&&document.cookie.includes('ltuid')){const e=document.createElement('input');e.value=document.cookie,document.body.appendChild(e),e.focus(),e.select();var t=document.execCommand('copy');document.body.removeChild(e),t?alert('HoYoLAB cookie copied to clipboard'):prompt('Failed to copy cookie. Manually copy the cookie below:\n\n',e.value)}else alert('Please logout and log back in. Cookie is expired/invalid!')})();
+   ```
+4. Once you've successfully ran the script, click the Click here to copy! button to copy the cookie.
+5. Finally, you can copy your cookie and put it inside of [helper.py](./helper.py)
+6. Run the script via `python ./helper.py` and copy paste the minified token as the value for your github action secret.
+
 
 The format of the credentials can be seen as the following [helper.py](./helper.py):
 
@@ -22,8 +34,8 @@ import logging
 DISCORD_WEBHOOK = "https://discord.com/api/webhooks/xxx/xxx"
 HOYO_TOKENS = [
     {
-        "ltoken": "xxx",
-        "ltuid": 123,
+        "ltoken": "xxx", # Put your ltoken here
+        "ltuid": 123, # Put your ltuid here
         "games": ["gs", "hsr"],
     },
 ]
