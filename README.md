@@ -24,7 +24,15 @@ You require the cookies containing `ltuid` and `ltoken` to be able to construct 
 6. Run the script via `python ./helper.py` and copy paste the minified token as the value for your github action secret.
 
 
-The format of the credentials can be seen as the following [helper.py](./helper.py):
+The format of the credentials is as follows:
+
+```json
+[{"ltoken": "xxx", "ltuid": 123, "games": ["gs", "hsr", "zzz"], "discord_uid": 123}]
+```
+
+Replace it with your real information. 
+
+Alternatively it can also be seen as the following [helper.py](./helper.py):
 
 ```python
 import json
