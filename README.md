@@ -36,7 +36,7 @@ HOYO_TOKENS = [
     {
         "ltoken": "xxx", # Put your ltoken here
         "ltuid": 123, # Put your ltuid here
-        "games": ["gs", "hsr"],
+        "games": ["gs", "hsr"], # Choose your games to sign in here
     },
 ]
 
@@ -51,7 +51,7 @@ if __name__ == "__main__":
     logging.info(f"DISCORD_WEBHOOK: {DISCORD_WEBHOOK}")
 ```
 
-*games* field must be one of `(gs, hsr, hi3)`
+*games* field must be one of `(gs, hsr, hi3, zzz)`
 
 Supports multiple tokens, in case you want to do it for multiple accounts
 
@@ -65,7 +65,7 @@ HOYO_TOKENS = [
     {
         "ltoken": "xxx",
         "ltuid": 123,
-        "games": ["gs", "hsr"],
+        "games": ["gs", "hsr", "zzz"],
         "enable_v2": True,
     },
 ]
@@ -80,7 +80,7 @@ HOYO_TOKENS = [
     {
         "ltoken": "xxx",
         "ltuid": 123,
-        "games": ["gs", "hsr"],
+        "games": ["gs", "hsr", "zzz"],
         "discord_uid": 123,
     },
 ]
