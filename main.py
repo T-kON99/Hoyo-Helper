@@ -28,6 +28,7 @@ url = {
     "gs": "https://sg-hk4e-api.hoyolab.com/event/sol/sign?lang=en-us&act_id=e202102251931481",
     "hsr": "https://sg-public-api.hoyolab.com/event/luna/os/sign?lang=en-us&act_id=e202303301540311",
     "hi3": "https://sg-public-api.hoyolab.com/event/mani/sign?lang=en-us&act_id=e202110291205111",
+    "zzz": "https://sg-act-nap-api.hoyolab.com/event/luna/zzz/os/sign?lang=en-us&act_id=e202406031448091",
 }
 
 cfg = {
@@ -42,6 +43,10 @@ cfg = {
     "hi3": {
         "long_name": "Honkai Impact 3rd",
         "icon_url": "https://cdn2.steamgriddb.com/file/sgdb-cdn/icon_thumb/8e017d9b51e7b9284cd0da58fae39b33.png",
+    },
+    "zzz": {
+        "long_name": "Zenless Zone Zero",
+        "icon_url": "https://yt3.googleusercontent.com/bhTyZchnZVHuXYHyvBbSv02rThHjV5pBk1G6Hi0wV_5F1RdXDEf3r7PdQoyl3s0KO0hDiiPc=s900-c-k-c0x00ffffff-no-rj",
     },
 }
 
@@ -82,6 +87,7 @@ def auto_signin_from_token_dict(token: dict) -> dict:
                     "",
                     Exception(f"resp status code is not 200, resp {resp.status_code}"),
                 )
+                logging.error(resp.text)
                 continue
             out[game] = (json.loads(resp.text)["message"], None)
         except Exception as err:
@@ -98,9 +104,10 @@ if __name__ == "__main__":
             color = succColor
             fields = [{"name": "Check-in Status", "value": f"**{msg}**"}]
             if err is not None:
+                logging.error(f"error when attempting to sign in, err {err}")
                 color = errColor
                 fields.append({"name": "Error", "value": f"**{err}**"})
-
+            logging.info(msg)
             discordEmbedAuthor = "HoyoHelper V2" if is_v2_token(token) else "HoyoHelper"
             discordUID = get_discord_uid(token)
             discordDescription = (
