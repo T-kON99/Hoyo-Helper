@@ -24,14 +24,27 @@ except KeyError:
         pass
 
 
-url = {
-    "gs": "https://sg-hk4e-api.hoyolab.com/event/sol/sign?lang=en-us&act_id=e202102251931481",
-    "hsr": "https://sg-public-api.hoyolab.com/event/luna/os/sign?lang=en-us&act_id=e202303301540311",
-    "hi3": "https://sg-public-api.hoyolab.com/event/mani/sign?lang=en-us&act_id=e202110291205111",
-    "zzz": "https://sg-act-nap-api.hoyolab.com/event/luna/zzz/os/sign?lang=en-us&act_id=e202406031448091",
+apiConf = {
+    "gs": {
+        "url": "https://sg-hk4e-api.hoyolab.com/event/sol/sign?lang=en-us&act_id=e202102251931481",
+        "header_dict": {},
+    },
+    "hsr": {
+        "url": "https://sg-public-api.hoyolab.com/event/luna/os/sign?lang=en-us&act_id=e202303301540311",
+        # TODO: add hkrpg once needed based on https://github.com/canaria3406/hoyolab-auto-sign/issues/52
+        "header_dict": {},
+    },
+    "hi3": {
+        "url": "https://sg-public-api.hoyolab.com/event/mani/sign?lang=en-us&act_id=e202110291205111",
+        "header_dict": {},
+    },
+    "zzz": {
+        "url": "https://sg-act-nap-api.hoyolab.com/event/luna/zzz/os/sign?lang=en-us&act_id=e202406031448091",
+        "header_dict": {"x-rpc-signgame": "zzz"},
+    },
 }
 
-cfg = {
+discordConf = {
     "gs": {
         "long_name": "Genshin Impact",
         "icon_url": "https://pbs.twimg.com/media/FDKGiHZVkAADAvD?format=jpg&name=medium",
@@ -74,6 +87,15 @@ def get_headers(token: str):
     }
 
 
+def get_merged_dict(d1: dict, d2: dict) -> dict:
+    newDict = {}
+    for k, v in d1.items():
+        newDict[k] = v
+    for k, v in d2.items():
+        newDict[k] = v
+    return newDict
+
+
 def auto_signin_from_token_dict(token: dict) -> dict:
     out = {}
     for game in token["games"]:
@@ -81,7 +103,9 @@ def auto_signin_from_token_dict(token: dict) -> dict:
             headers = get_headers(
                 get_token(token["ltoken"], token["ltuid"], is_v2_token(token))
             )
-            resp = requests.post(url[game], headers=headers)
+            conf = apiConf[game]
+            headers = get_merged_dict(headers, conf["header_dict"])
+            resp = requests.post(conf["url"], headers=headers)
             if resp.status_code != 200:
                 out[game] = (
                     "",
@@ -116,7 +140,7 @@ if __name__ == "__main__":
                 else f"*Helping check-ins~*"
             )
             discordEmbed = {
-                "title": f"{cfg[game]['long_name']} Auto Check-in",
+                "title": f"{discordConf[game]['long_name']} Auto Check-in",
                 "description": discordDescription,
                 "author": {
                     "name": discordEmbedAuthor,
@@ -132,7 +156,7 @@ if __name__ == "__main__":
                     "text": f"HoyoHelper {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
                 },
                 "color": color,
-                "image": {"url": cfg[game]["icon_url"]},
+                "image": {"url": discordConf[game]["icon_url"]},
             }
             logging.info(
                 utils.to_discwebhook(
